@@ -1,0 +1,93 @@
+/* src/App.css ACTUALIZADO */
+
+/* Esto asegura que el fondo ocupe toda la pantalla y centre el contenido */
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center;     /* Centrado vertical */
+  min-height: 100vh;       /* Altura mínima: 100% de la ventana */
+  background-color: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* El contenedor principal de la tarjeta */
+.login-container {
+  width: 100%;
+  padding: 20px; /* Un pequeño margen en pantallas muy pequeñas */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+/* LA TARJETA PROPIAMENTE DICHA (Aquí están los cambios de tamaño) */
+.login-card {
+  background: white;
+  padding: 4rem;           /* AUMENTADO: Mucho más espacio interno (antes 2rem) */
+  border-radius: 20px;     /* Bordes más redondeados */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1); /* Sombra más suave y grande */
+  width: 100%;
+  max-width: 700px;        /* AUMENTADO: El ancho máximo ahora es 700px (antes 400px) */
+  text-align: center;
+  color: #333;
+}
+
+/* Textos más grandes */
+h1 { 
+  margin-bottom: 1rem; 
+  color: #1a1a1a; 
+  font-size: 2.5rem; /* Título más grande */
+}
+p { 
+  color: #666; 
+  margin-bottom: 2.5rem; 
+  font-size: 1.2rem; /* Subtítulo más grande */
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+  font-size: 1.1rem; /* Etiquetas más grandes */
+  color: #555;
+}
+
+/* Campos de texto (inputs) más grandes */
+input {
+  width: 100%;
+  padding: 15px 20px; /* Inputs más altos y con más espacio lateral */
+  border: 2px solid #eee; /* Borde un poco más grueso */
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 1.1rem; /* Letra dentro del input más grande */
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff; /* Color azul al hacer clic */
+}
+
+/* Botón más grande y llamativo */
+.login-btn {
+  width: 100%;
+  padding: 15px;      /* Botón más alto */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.3rem;  /* Texto del botón más grande */
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
