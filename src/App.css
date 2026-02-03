@@ -1,93 +1,360 @@
-/* src/App.css ACTUALIZADO */
+/* App.css - CON REDIMENSIONAMIENTO ESTILO EXCEL */
 
-/* Esto asegura que el fondo ocupe toda la pantalla y centre el contenido */
-body {
-  margin: 0;
+/* 1. CONTENEDOR PRINCIPAL */
+.app-container, .excel-shell {
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  justify-content: center; /* Centrado horizontal */
-  align-items: center;     /* Centrado vertical */
-  min-height: 100vh;       /* Altura mínima: 100% de la ventana */
-  background-color: #f0f2f5;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  flex-direction: column;
+  background-color: #000;
+  overflow: hidden;
 }
 
-/* El contenedor principal de la tarjeta */
-.login-container {
-  width: 100%;
-  padding: 20px; /* Un pequeño margen en pantallas muy pequeñas */
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
+/* 2. ÁREA DE LA TABLA (Viewport) */
+.table-viewport, .table-container {
+  flex: 1;
+  overflow: auto;
+  background-color: #000;
+  border-top: 1px solid #333;
+  position: relative;
 }
 
-/* LA TARJETA PROPIAMENTE DICHA (Aquí están los cambios de tamaño) */
-.login-card {
-  background: white;
-  padding: 4rem;           /* AUMENTADO: Mucho más espacio interno (antes 2rem) */
-  border-radius: 20px;     /* Bordes más redondeados */
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1); /* Sombra más suave y grande */
-  width: 100%;
-  max-width: 700px;        /* AUMENTADO: El ancho máximo ahora es 700px (antes 400px) */
-  text-align: center;
-  color: #333;
+/* 3. TABLA ESTILO EXCEL */
+.excel-table, .main-table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  table-layout: fixed; /* IMPORTANTE para redimensionamiento */
 }
 
-/* Textos más grandes */
-h1 { 
-  margin-bottom: 1rem; 
-  color: #1a1a1a; 
-  font-size: 2.5rem; /* Título más grande */
-}
-p { 
-  color: #666; 
-  margin-bottom: 2.5rem; 
-  font-size: 1.2rem; /* Subtítulo más grande */
-}
-
-.input-group {
-  margin-bottom: 1.5rem;
+/* 4. ENCABEZADOS (Sticky Top) */
+.excel-table thead th, .main-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #1a1a1a !important;
+  color: #ff007f;
+  padding: 12px 15px;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 1px solid #333;
   text-align: left;
+  border-bottom: 2px solid #ff007f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none; /* Evita selección de texto al redimensionar */
 }
 
-label {
-  display: block;
-  margin-bottom: 0.8rem;
+/* 5. COLUMNA DE ID FIJA (Sticky Left) */
+.id-col-fixed {
+  position: sticky;
+  left: 0;
+  z-index: 101;
+  background-color: #111 !important;
+  color: #fff;
+  width: 60px;
+  min-width: 60px;
+  text-align: center;
+  border-right: 2px solid #ff007f !important;
   font-weight: bold;
-  font-size: 1.1rem; /* Etiquetas más grandes */
-  color: #555;
 }
 
-/* Campos de texto (inputs) más grandes */
-input {
+/* 6. CELDAS */
+.excel-table td, .main-table td {
+  padding: 8px 12px;
+  border: 1px solid #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* 7. FILA ACTIVA / SELECCIONADA */
+.fila-activa {
+  background-color: rgba(255, 0, 127, 0.1) !important;
+}
+
+/* ========================================
+   REDIMENSIONAMIENTO DE COLUMNAS
+   ======================================== */
+
+/* Manejador para redimensionar columnas */
+.column-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.column-resizer:hover {
+  background: rgba(255, 0, 127, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+}
+
+.column-resizer:active {
+  background: rgba(255, 0, 127, 0.6);
+}
+
+/* Indicador visual al redimensionar */
+th:has(.column-resizer:hover) {
+  background-color: rgba(255, 0, 127, 0.1) !important;
+}
+
+/* ========================================
+   REDIMENSIONAMIENTO DE FILAS
+   ======================================== */
+
+/* Contenedor de celda con número de fila */
+.row-number-cell {
+  position: relative;
+  user-select: none;
+}
+
+/* Manejador para redimensionar filas */
+.row-resizer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  padding: 15px 20px; /* Inputs más altos y con más espacio lateral */
-  border: 2px solid #eee; /* Borde un poco más grueso */
-  border-radius: 10px;
-  box-sizing: border-box;
-  font-size: 1.1rem; /* Letra dentro del input más grande */
-  transition: border-color 0.3s;
+  height: 6px;
+  cursor: row-resize;
+  user-select: none;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.2s;
 }
 
-input:focus {
-  outline: none;
-  border-color: #007bff; /* Color azul al hacer clic */
+.row-resizer:hover {
+  background: rgba(255, 0, 127, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
 }
 
-/* Botón más grande y llamativo */
-.login-btn {
-  width: 100%;
-  padding: 15px;      /* Botón más alto */
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.3rem;  /* Texto del botón más grande */
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 1.5rem;
-  transition: background-color 0.2s;
+.row-resizer:active {
+  background: rgba(255, 0, 127, 0.6);
 }
 
-.login-btn:hover {
-  background-color: #0056b3;
+/* Indicador visual al redimensionar */
+.row-number-cell:has(.row-resizer:hover) {
+  background-color: rgba(255, 0, 127, 0.2) !important;
+}
+
+/* ========================================
+   ESTADOS DURANTE REDIMENSIONAMIENTO
+   ======================================== */
+
+/* Cursor global al redimensionar */
+body.resizing-column {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+body.resizing-row {
+  cursor: row-resize !important;
+  user-select: none;
+}
+
+/* Deshabilitar transiciones durante resize para mejor performance */
+.excel-table.resizing th,
+.excel-table.resizing td {
+  transition: none !important;
+}
+
+/* ========================================
+   SCROLLBAR PERSONALIZADO
+   ======================================== */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 6px;
+  border: 2px solid #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff007f;
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+}
+
+::-webkit-scrollbar-corner {
+  background: #0a0a0a;
+}
+
+/* Scrollbars para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 #0a0a0a;
+}
+
+/* ========================================
+   LOADING OVERLAY
+   ======================================== */
+.loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #ff007f;
+  padding: 30px 50px;
+  border-radius: 12px;
+  z-index: 1000;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: 2px solid #ff007f;
+  box-shadow: 0 0 30px rgba(255, 0, 127, 0.5);
+  animation: pulse-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-loading {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ========================================
+   TOOLTIPS PARA REDIMENSIONADORES
+   ======================================== */
+.column-resizer::after,
+.row-resizer::after {
+  content: attr(title);
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+
+.column-resizer::after {
+  top: -35px;
+  right: -20px;
+}
+
+.row-resizer::after {
+  left: 70px;
+  bottom: -5px;
+}
+
+.column-resizer:hover::after,
+.row-resizer:hover::after {
+  opacity: 1;
+}
+
+/* ========================================
+   MEJORAS VISUALES
+   ======================================== */
+
+/* Efecto hover en celdas */
+.excel-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Highlight de columna al hover en header */
+.excel-table thead th:hover {
+  background-color: rgba(255, 0, 127, 0.15) !important;
+}
+
+/* Transiciones suaves */
+.excel-table td,
+.excel-table th {
+  transition: background-color 0.2s ease;
+}
+
+/* Espaciado interno responsive */
+@media (max-width: 768px) {
+  .excel-table td,
+  .excel-table th {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .column-resizer,
+  .row-resizer {
+    display: none; /* Ocultar en móviles */
+  }
+}
+
+/* ========================================
+   ACCESIBILIDAD
+   ======================================== */
+
+/* Focus visible para navegación por teclado */
+.excel-table td:focus-visible,
+.excel-table th:focus-visible {
+  outline: 2px solid #00ff88;
+  outline-offset: -2px;
+}
+
+/* Alto contraste para mejor legibilidad */
+@media (prefers-contrast: high) {
+  .excel-table {
+    border: 2px solid #fff;
+  }
+  
+  .excel-table td,
+  .excel-table th {
+    border-color: #fff;
+  }
+}
+
+.fila-seleccionada {
+  background-color: rgba(255, 0, 127, 0.15) !important;
+}
+
+/* ========================================
+   ✅ AGREGAR ESTO AL FINAL DE App.css
+   FIX: DROPDOWN VISIBLE SOBRE OTRAS CELDAS
+   ======================================== */
+
+/* Celda que está siendo editada - z-index alto */
+.celda-editando {
+  position: relative !important;
+  z-index: 1000 !important;
+  overflow: visible !important;
+}
+
+/* Fila que contiene la celda editando */
+.fila-editando {
+  position: relative !important;
+  z-index: 999 !important;
+}
+
+/* Permitir que el tbody muestre overflow */
+.excel-table tbody {
+  position: relative;
+}
+
+/* Filas normales con z-index bajo */
+.excel-table tbody tr {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dropdown del CellEditor debe estar encima de TODO */
+.celda-editando > div {
+  position: relative;
+  z-index: 10001 !important;
 }
