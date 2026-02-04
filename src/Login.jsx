@@ -37,9 +37,49 @@ const Login = ({ onLogin, cargando }) => {
     <div className="login-screen">
       <div className="login-card">
         
+        {/* ✅ HEADER CON LOGOS - ImpactBPO principal, EazyLiens secundario */}
         <header className="login-header">
-          <h1>Eazy Liens</h1>
-          <p>Gestión Segura de Datos</p>
+          <div className="logos-container" style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '16px',
+            marginBottom: '20px'
+          }}>
+            {/* ImpactBPO - Logo PRINCIPAL (más grande) */}
+            <img 
+              src="/logo-impact.png" 
+              alt="ImpactBPO" 
+              style={{ 
+                height: '50px', 
+                width: 'auto',
+                objectFit: 'contain'
+              }} 
+            />
+            
+            {/* Separador */}
+            <div style={{ 
+              width: '1px', 
+              height: '40px', 
+              backgroundColor: 'rgba(255,255,255,0.2)' 
+            }} />
+            
+            {/* EazyLiens - Logo SECUNDARIO (más pequeño) */}
+            <img 
+              src="/logo-eazy.png" 
+              alt="EazyLiens" 
+              style={{ 
+                height: '30px', 
+                width: 'auto',
+                objectFit: 'contain',
+                opacity: 0.9
+              }} 
+            />
+          </div>
+          
+          <p style={{ color: '#94a3b8', fontSize: '0.95rem', margin: 0 }}>
+            Gestión Segura de Datos
+          </p>
         </header>
 
         <form className="login-form" onSubmit={handleSubmit}>

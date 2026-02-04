@@ -10,12 +10,16 @@ const PALETA_OFFICE = [
 const Toolbar = ({ 
   filaSeleccionada, onNuevaFila, onBorrarFila, onCambiarColor, 
   busqueda, setBusqueda, pagina, setPagina, totalPaginas,
-  username, userRole, totalDatos, setVerAdmin, setVerUsuarios, setVerLogs, onResetTamanos, onExportarExcel, onLogout
+  username, userRole, totalDatos, setVerAdmin, setVerUsuarios, setVerLogs, 
+  onResetTamanos, onExportarExcel, onLogout, puedePintar
 }) => {
   
   const [menuAbierto, setMenuAbierto] = useState(null); 
 
-  const esJefe = userRole === 'Admin' || userRole === 'Superadmin';
+  // PERMISOS
+  const roleSeguro = (userRole || 'User').toLowerCase();
+  const esSuperadmin = roleSeguro === 'superadmin';
+  const esAdmin = roleSeguro === 'admin';
 
   return (
     <header className="unified-toolbar" onClick={() => setMenuAbierto(null)}>
@@ -25,7 +29,7 @@ const Toolbar = ({
           + NUEVA FILA
         </button>
 
-        {esJefe && (
+        {(esSuperadmin || esAdmin) && (
           <button 
             className={`btn-app btn-delete ${filaSeleccionada ? 'active' : ''}`} 
             onClick={(e) => { e.stopPropagation(); onBorrarFila(); }} 
@@ -40,18 +44,18 @@ const Toolbar = ({
       <div className="group-style">
         <span className="label-neon">ESTILO</span>
         <button 
-          className={`icon-v ${!filaSeleccionada ? 'disabled' : ''}`}
-          title={!filaSeleccionada ? 'Selecciona una celda o fila primero' : 'Color de Fondo'} 
+          className={`icon-v ${!puedePintar ? 'disabled' : ''}`}
+          title={!puedePintar ? 'Selecciona una celda o fila que se pueda pintar' : 'Color de Fondo'} 
           onClick={(e) => { 
             e.stopPropagation(); 
-            if (filaSeleccionada) setMenuAbierto(menuAbierto === 'bg' ? null : 'bg'); 
+            if (puedePintar) setMenuAbierto(menuAbierto === 'bg' ? null : 'bg'); 
           }}
-          disabled={!filaSeleccionada}
+          disabled={!puedePintar}
         >
           🪣
         </button>
         
-        {menuAbierto && filaSeleccionada && (
+        {menuAbierto && puedePintar && (
           <div className="office-palette" onClick={(e) => e.stopPropagation()}>
             <div className="grid-colors">
               {PALETA_OFFICE.map(c => (
@@ -87,12 +91,13 @@ const Toolbar = ({
             ✕
           </button>
         )}
-        <span className="total-badge">{totalDatos.toLocaleString()} registros</span>
+        <span className="total-badge">{(totalDatos || 0).toLocaleString()} registros</span>
       </div>
 
       <div className="group-user">
         
-        {esJefe && (
+        {/* SUPERADMIN: Todos los botones */}
+        {esSuperadmin && (
           <>
             <button 
               className="btn-admin-config"
@@ -113,7 +118,7 @@ const Toolbar = ({
             <button 
               className="btn-super-admin" 
               onClick={(e) => { e.stopPropagation(); setVerUsuarios(true); }}
-              title="Gestionar Usuarios (Solo Admin y Superadmin)"
+              title="Gestionar Usuarios"
             >
               👑 Usuarios
             </button>
@@ -128,6 +133,28 @@ const Toolbar = ({
           </>
         )}
 
+        {/* ADMIN: Solo Editar Listas y Usuarios */}
+        {esAdmin && (
+          <>
+            <button 
+              className="btn-admin-config"
+              onClick={(e) => { e.stopPropagation(); setVerAdmin(true); }}
+              title="Administrar listas desplegables"
+            >
+              ⚙️ Editar Listas
+            </button>
+
+            <button 
+              className="btn-super-admin" 
+              onClick={(e) => { e.stopPropagation(); setVerUsuarios(true); }}
+              title="Gestionar Usuarios"
+            >
+              👑 Usuarios
+            </button>
+          </>
+        )}
+
+        {/* Todos ven Excel */}
         <button className="btn-action" onClick={onExportarExcel} title="Exportar a Excel">
           📥 Excel
         </button>
@@ -157,8 +184,8 @@ const Toolbar = ({
         </button>
 
         <div className="user-info-display">
-          <span className="user-login-name">👤 {username}</span>
-          <span className={`user-role-tag role-${userRole.toLowerCase()}`}>{userRole}</span>
+          <span className="user-login-name">👤 {username || 'Usuario'}</span>
+          <span className={`user-role-tag role-${roleSeguro}`}>{userRole || 'User'}</span>
         </div>
       </div>
     </header>

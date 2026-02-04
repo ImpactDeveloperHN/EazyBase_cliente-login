@@ -15,69 +15,38 @@ const ANCHO_MINIMO = 80;
 const ALTO_MINIMO = 30;
 
 // ========================================
-// COLORES FIJOS E INMUTABLES - NADIE PUEDE CAMBIARLOS
+// LISTAS DE VALORES CON COLOR FIJO
 // ========================================
 
-const COLORES_FIJOS = {
-  'Law Firm': {
-    // CELESTE - Grupo 1
-    'Pish & Pish': { bg: '#ADD8E6', text: '#000000' },
-    'Moet Law Group': { bg: '#ADD8E6', text: '#000000' },
-    'Rezvani Law Firm': { bg: '#ADD8E6', text: '#000000' },
-    'Dordick Law': { bg: '#ADD8E6', text: '#000000' },
-    'Mamanne Law': { bg: '#ADD8E6', text: '#000000' },
-    'Karns & Karns': { bg: '#ADD8E6', text: '#000000' },
-    'Estrada Law Group': { bg: '#ADD8E6', text: '#000000' },
-    'Yerushalmi Law Firm': { bg: '#ADD8E6', text: '#000000' },
-    'The Law Offices of Larry H. Parker Inc.': { bg: '#ADD8E6', text: '#000000' },
-    'Wilshire Law Firm, PLC': { bg: '#ADD8E6', text: '#000000' },
-    'Valero Law Group': { bg: '#ADD8E6', text: '#000000' },
-    'Morgan & Morgan For the People': { bg: '#ADD8E6', text: '#000000' },
-    'The Dominguez Firm': { bg: '#ADD8E6', text: '#000000' },
-    'The Simon Law Group': { bg: '#ADD8E6', text: '#000000' },
-    'Elite Law Group LA': { bg: '#ADD8E6', text: '#000000' },
-    // VERDE - Grupo 2
-    'Law Office of Joseph D. Ryan': { bg: '#90EE90', text: '#000000' },
-    'KR Law': { bg: '#90EE90', text: '#000000' },
-    'Fiore Legal': { bg: '#90EE90', text: '#000000' },
-    'Lionsgate Law Group': { bg: '#90EE90', text: '#000000' },
-    'The Capital Firm': { bg: '#90EE90', text: '#000000' },
-    'KAL Law': { bg: '#90EE90', text: '#000000' },
-    'Alexandroff Law Group': { bg: '#90EE90', text: '#000000' },
-    'Mendez & Sanchez': { bg: '#90EE90', text: '#000000' },
-    'Kronos Law': { bg: '#90EE90', text: '#000000' },
-    'DK Law': { bg: '#90EE90', text: '#000000' },
-  },
-  'Specialty': {
-    // TODOS VERDES
-    'Chiropractor': { bg: '#90EE90', text: '#000000' },
-    'Physical Therapy': { bg: '#90EE90', text: '#000000' },
-    'Ortho Spine': { bg: '#90EE90', text: '#000000' },
-    'Neurosurgeon': { bg: '#90EE90', text: '#000000' },
-  },
-  'Type': {
-    // VERDES
-    'Injections': { bg: '#90EE90', text: '#000000' },
-    'Pre-Op': { bg: '#90EE90', text: '#000000' },
-    'Procedures': { bg: '#90EE90', text: '#000000' },
-    // ROJO
-    'Surgery': { bg: '#FF0000', text: '#FFFFFF' },
-  }
-};
-
-// Colores rotativos para fechas - cambian cada día
-const COLORES_FECHA = [
-  '#3B82F6', // Día 0 (Hoy): Azul
-  '#10B981', // Día -1 (Ayer): Verde
-  '#F97316', // Día -2: Naranja
-  '#8B5CF6', // Día -3: Púrpura
-  '#EAB308', // Día -4: Amarillo
-  '#EF4444', // Día -5: Rojo
-  '#EC4899', // Día -6: Rosa
-  '#06B6D4', // Día -7: Cyan
-  '#92400E', // Día -8: Marrón
-  '#6B7280', // Día -9: Gris
+const LAW_FIRM_CELESTES = [
+  'Pish & Pish', 'Moet Law Group', 'Rezvani Law Firm', 'Dordick Law', 'Mamanne Law',
+  'Karns & Karns', 'Estrada Law Group', 'Yerushalmi Law Firm', 'The Law Offices of Larry H. Parker Inc.',
+  'Wilshire Law Firm, PLC', 'Valero Law Group', 'Morgan & Morgan For the People', 'The Dominguez Firm',
+  'The Simon Law Group', 'Elite Law Group LA'
 ];
+
+const LAW_FIRM_VERDES = [
+  'Law Office of Joseph D. Ryan', 'KR Law', 'Fiore Legal', 'Lionsgate Law Group', 'The Capital Firm',
+  'KAL Law', 'Alexandroff Law Group', 'Mendez & Sanchez', 'Kronos Law', 'DK Law'
+];
+
+const SPECIALTY_VERDES = ['Chiropractor', 'Physical Therapy', 'Ortho Spine', 'Neurosurgeon'];
+
+const TYPE_VERDES = ['Injections', 'Pre-Op', 'Procedures'];
+const TYPE_ROJOS = ['Surgery'];
+
+// ========================================
+// COLORES
+// ========================================
+
+const COLORES_FECHA = [
+  '#3B82F6', '#10B981', '#F97316', '#8B5CF6', '#EAB308',
+  '#EF4444', '#EC4899', '#06B6D4', '#92400E', '#6B7280',
+];
+
+const COLOR_CELESTE = '#00FFFF';
+const COLOR_VERDE = '#00FF00';
+const COLOR_ROJO = '#FF0000';
 
 // ========================================
 // HELPERS
@@ -93,10 +62,61 @@ const safeJsonParse = (str, defaultVal = {}) => {
   }
 };
 
+// ========================================
+// FUNCIÓN CLAVE: ¿Tiene color fijo esta celda?
+// ========================================
+
+function obtenerColorFijo(fila, col) {
+  const valor = fila?.[col];
+  if (!valor) return null;
+
+  // Law Firm
+  if (col === 'Law Firm') {
+    if (LAW_FIRM_CELESTES.includes(valor)) return { bg: COLOR_CELESTE, text: '#000000' };
+    if (LAW_FIRM_VERDES.includes(valor)) return { bg: COLOR_VERDE, text: '#000000' };
+    return null; // No está en lista → no tiene color fijo
+  }
+
+  // Specialty
+  if (col === 'Specialty') {
+    if (SPECIALTY_VERDES.includes(valor)) return { bg: COLOR_VERDE, text: '#000000' };
+    return null;
+  }
+
+  // Type
+  if (col === 'Type') {
+    if (TYPE_VERDES.includes(valor)) return { bg: COLOR_VERDE, text: '#000000' };
+    if (TYPE_ROJOS.includes(valor)) return { bg: COLOR_ROJO, text: '#FFFFFF' };
+    return null;
+  }
+
+  // Date
+  if (col === 'Date' && valor) {
+    return obtenerColorPorFecha(valor);
+  }
+
+  return null;
+}
+
+// ========================================
+// ¿Es esta celda pintable manualmente?
+// ========================================
+
+function esCeldaPintable(fila, col) {
+  // Date nunca es pintable
+  if (col === 'Date') return false;
+
+  // Si tiene color fijo, no es pintable
+  const colorFijo = obtenerColorFijo(fila, col);
+  if (colorFijo) return false;
+
+  // Todo lo demás es pintable
+  return true;
+}
+
 function obtenerColorPorFecha(fechaStr) {
   if (!fechaStr || typeof fechaStr !== 'string') return null;
   
-  // Parsear YYYY-MM-DD como fecha local consistentemente
   const partes = fechaStr.split('-');
   if (partes.length !== 3) return null;
   
@@ -106,11 +126,8 @@ function obtenerColorPorFecha(fechaStr) {
   
   if (isNaN(fecha.getTime())) return null;
   
-  // Calcular diferencia en días (negativo = pasado, positivo = futuro)
   const diffTime = hoy - fecha;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  
-  // Usar valor absoluto para el índice del color
   const indice = Math.abs(diffDays) % 10;
   
   return {
@@ -119,34 +136,28 @@ function obtenerColorPorFecha(fechaStr) {
   };
 }
 
-function obtenerColorCelda(fila, col, bgGuardado, fcGuardado) {
-  const valor = fila[col];
-  
-  // 1. Verificar color fijo por valor (LAW FIRM, SPECIALTY, TYPE)
-  if (COLORES_FIJOS[col] && COLORES_FIJOS[col][valor]) {
-    return COLORES_FIJOS[col][valor];
+// ========================================
+// Obtener color final de celda (fijo o manual)
+// ========================================
+
+function obtenerColorCelda(fila, col, bgGuardado) {
+  // 1. Primero verificar si tiene color fijo
+  const colorFijo = obtenerColorFijo(fila, col);
+  if (colorFijo) return colorFijo;
+
+  // 2. Si no, usar color guardado manualmente
+  if (bgGuardado) {
+    return {
+      bg: bgGuardado,
+      text: '#000000'
+    };
   }
-  
-  // 2. Verificar color por fecha (DATE)
-  if (col === 'Date' && valor) {
-    const colorFecha = obtenerColorPorFecha(valor);
-    if (colorFecha) return colorFecha;
-  }
-  
-  // 3. Si no hay color automático, usar blanco (pero nunca se guarda)
+
+  // 3. Default blanco
   return {
     bg: '#ffffff',
     text: '#000000'
   };
-}
-
-// Verifica si una celda tiene color automático (fijo)
-function esColorAutomatico(fila, col) {
-  if (!fila) return false;
-  const valor = fila[col];
-  if (COLORES_FIJOS[col] && COLORES_FIJOS[col][valor]) return true;
-  if (col === 'Date' && valor) return true;
-  return false;
 }
 
 function useCopyPaste() {
@@ -175,6 +186,7 @@ const CeldaMemo = React.memo(({
   col, 
   anchoColumnas, 
   altoFilas,
+  bgGuardado,
   isSelected,
   isEditing,
   onSelect,
@@ -182,8 +194,9 @@ const CeldaMemo = React.memo(({
   onSave,
   opciones
 }) => {
-  // Siempre calcular color automático - ignorar cualquier color guardado
-  const colorInfo = obtenerColorCelda(fila, col, null, null);
+  const colorInfo = obtenerColorCelda(fila, col, bgGuardado);
+  const pintable = esCeldaPintable(fila, col);
+  const colorFijo = obtenerColorFijo(fila, col);
   
   return (
     <td
@@ -199,9 +212,9 @@ const CeldaMemo = React.memo(({
         overflow: isEditing ? 'visible' : 'hidden',
         zIndex: isEditing ? 1000 : 'auto',
         cursor: 'pointer',
-        fontWeight: esColorAutomatico(fila, col) ? '500' : 'normal'
+        fontWeight: colorFijo ? '500' : 'normal'
       }}
-      title={esColorAutomatico(fila, col) ? 'Color automático - No modificable' : ''}
+      title={colorFijo ? 'Color automático - No modificable' : (pintable ? 'Clic para editar, doble clic para menú' : '')}
     >
       {isEditing ? (
         <div 
@@ -253,7 +266,6 @@ function App() {
   const tableRef = useRef(null);
   const { copyToClipboard, pasteFromClipboard } = useCopyPaste();
 
-  // Persistir tamaños
   useEffect(() => {
     localStorage.setItem('columnWidths', JSON.stringify(anchoColumnas));
   }, [anchoColumnas]);
@@ -262,7 +274,6 @@ function App() {
     localStorage.setItem('rowHeights', JSON.stringify(altoFilas));
   }, [altoFilas]);
 
-  // Fetch de listas
   const fetchListas = useCallback(async () => {
     try {
       const { data, error } = await supabase.from('Lista_Desplegable').select('*');
@@ -285,10 +296,9 @@ function App() {
     }
   }, []);
 
-  // Fetch de datos
-  const fetchDatos = useCallback(async () => {
+  const fetchDatos = useCallback(async (silencioso = false) => {
     if (!userProfile) return;
-    setCargando(true);
+    if (!silencioso) setCargando(true);
     try {
       let query = supabase.from('Eazy_1').select('*', { count: 'exact' });
       
@@ -309,9 +319,9 @@ function App() {
       setTotalEncontrados(count || 0);
     } catch (error) {
       console.error('Error cargando datos:', error);
-      alert('Error al cargar los datos: ' + error.message);
+      if (!silencioso) alert('Error al cargar los datos: ' + error.message);
     } finally {
-      setCargando(false);
+      if (!silencioso) setCargando(false);
     }
   }, [pagina, userProfile, busquedaDiferida]);
 
@@ -323,7 +333,41 @@ function App() {
     if (userProfile) fetchDatos(); 
   }, [userProfile, fetchDatos]);
 
-  // Debounce búsqueda
+  // REALTIME CON RECONEXIÓN
+  useEffect(() => {
+    if (!userProfile) return;
+    let subscription = null;
+    let reconnectTimeout = null;
+    let isSubscribed = true;
+
+    const setupRealtime = () => {
+      subscription = supabase
+        .channel('eazy_1_changes')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'Eazy_1' },
+          (payload) => {
+            console.log('✅ Cambio en tiempo real:', payload);
+            fetchDatos(true);
+          }
+        )
+        .subscribe((status) => {
+          if (status === 'CHANNEL_ERROR' && isSubscribed) {
+            console.log('❌ Error en canal, reconectando en 5s...');
+            reconnectTimeout = setTimeout(() => setupRealtime(), 5000);
+          }
+        });
+    };
+
+    setupRealtime();
+    
+    return () => {
+      isSubscribed = false;
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (subscription) subscription.unsubscribe();
+    };
+  }, [userProfile, fetchDatos]);
+
   useEffect(() => {
     let cancelled = false;
     const h = setTimeout(() => {
@@ -332,27 +376,15 @@ function App() {
         if (busqueda.trim()) setPagina(0);
       }
     }, 500);
-    return () => {
-      cancelled = true;
-      clearTimeout(h);
-    };
+    return () => { cancelled = true; clearTimeout(h); };
   }, [busqueda]);
 
-  // Funciones de datos
   const handleSaveCell = useCallback(async (filaId, col, valor) => {
     const datosAnteriores = [...datos];
-    
-    setDatos(prev => prev.map(row => 
-      row.id === filaId ? { ...row, [col]: valor } : row
-    ));
+    setDatos(prev => prev.map(row => row.id === filaId ? { ...row, [col]: valor } : row));
     setEditandoCelda(null);
-    
     try {
-      const { error } = await supabase
-        .from('Eazy_1')
-        .update({ [col]: valor })
-        .eq('id', filaId);
-      
+      const { error } = await supabase.from('Eazy_1').update({ [col]: valor }).eq('id', filaId);
       if (error) throw error;
     } catch (error) {
       setDatos(datosAnteriores);
@@ -368,12 +400,7 @@ function App() {
         Date: new Date().toISOString().split('T')[0]
       }]);
       if (error) throw error;
-      if (busqueda) {
-        setBusqueda('');
-        setPagina(0);
-      } else {
-        fetchDatos();
-      }
+      if (busqueda) { setBusqueda(''); setPagina(0); } else { fetchDatos(); }
     } catch (error) {
       console.error('Error creando fila:', error);
       alert('Error al crear nueva fila');
@@ -384,7 +411,6 @@ function App() {
     const tienePermiso = userProfile?.role === 'Admin' || userProfile?.role === 'Superadmin';
     if (!tienePermiso || !filaSeleccionada) return;
     if (!window.confirm("¿Seguro que desea borrar este registro?")) return;
-    
     try {
       const { error } = await supabase.from('Eazy_1').delete().eq('id', filaSeleccionada.id);
       if (error) throw error;
@@ -396,26 +422,88 @@ function App() {
     }
   }, [userProfile, filaSeleccionada, fetchDatos]);
 
-  // DESHABILITADO: No se puede cambiar colores manualmente
-  const handleCambiarColor = useCallback((tipo, color) => {
-    // Los colores son automáticos - no se pueden cambiar manualmente
-    alert('Los colores son automáticos según el contenido de la celda y no se pueden modificar manualmente.\n\n' +
-          '• Law Firm: Celeste o Verde según el bufete\n' +
-          '• Specialty: Verde\n' +
-          '• Type: Verde (Rojo para Surgery)\n' +
-          '• Date: Color diferente cada día');
-  }, []);
+  // ========================================
+  // PINTAR CELDA O FILA
+  // ========================================
 
-  // Atajos de teclado
+  const handleCambiarColor = useCallback(async (tipo, color) => {
+    // Pintar celda individual
+    if (filaSeleccionada?.col && filaSeleccionada?.id) {
+      const fila = datos.find(d => d.id === filaSeleccionada.id);
+      
+      // Verificar si es pintable
+      if (!esCeldaPintable(fila, filaSeleccionada.col)) {
+        alert('Esta celda tiene un color automático y no se puede modificar manualmente.');
+        return;
+      }
+
+      try {
+        let actuales = safeJsonParse(fila.bg_color, {});
+        actuales[filaSeleccionada.col] = color;
+        
+        const { error } = await supabase
+          .from('Eazy_1')
+          .update({ bg_color: JSON.stringify(actuales) })
+          .eq('id', filaSeleccionada.id);
+        
+        if (error) throw error;
+        
+        setDatos(prev => prev.map(d => 
+          d.id === filaSeleccionada.id ? { ...d, bg_color: JSON.stringify(actuales) } : d
+        ));
+      } catch (error) {
+        console.error('Error pintando celda:', error);
+        alert('Error al pintar la celda');
+      }
+      return;
+    }
+
+    // Pintar fila completa
+    if (filaCompletaSeleccionada) {
+      const fila = datos.find(d => d.id === filaCompletaSeleccionada);
+      if (!fila) return;
+
+      try {
+        let actuales = safeJsonParse(fila.bg_color, {});
+        let cambiosRealizados = 0;
+
+        // Pintar SOLO las celdas que son pintables
+        COLUMNAS.forEach(col => {
+          if (esCeldaPintable(fila, col)) {
+            actuales[col] = color;
+            cambiosRealizados++;
+          }
+        });
+
+        if (cambiosRealizados === 0) {
+          alert('Todas las celdas de esta fila tienen colores automáticos que no se pueden modificar.');
+          return;
+        }
+
+        const { error } = await supabase
+          .from('Eazy_1')
+          .update({ bg_color: JSON.stringify(actuales) })
+          .eq('id', filaCompletaSeleccionada);
+        
+        if (error) throw error;
+        
+        setDatos(prev => prev.map(d => 
+          d.id === filaCompletaSeleccionada ? { ...d, bg_color: JSON.stringify(actuales) } : d
+        ));
+      } catch (error) {
+        console.error('Error pintando fila:', error);
+        alert('Error al pintar la fila');
+      }
+      return;
+    }
+
+    alert('Selecciona una celda o una fila (clic en #) para pintar');
+  }, [datos, filaSeleccionada, filaCompletaSeleccionada]);
+
   useEffect(() => {
     const handleKey = async (e) => {
       if (!userProfile) return;
-      
-      if (e.ctrlKey && e.key === 'n') {
-        e.preventDefault();
-        handleNuevaFila();
-      }
-      
+      if (e.ctrlKey && e.key === 'n') { e.preventDefault(); handleNuevaFila(); }
       if (e.ctrlKey && e.key === 'e') {
         e.preventDefault();
         if (filaSeleccionada) {
@@ -426,29 +514,21 @@ function App() {
           setFilaCompletaSeleccionada(null);
         }
       }
-      
       if (e.ctrlKey && e.key === 'c' && filaSeleccionada) {
         e.preventDefault();
         const fila = datos.find(d => d.id === filaSeleccionada.id);
-        if (fila && filaSeleccionada.col) {
-          copyToClipboard(fila[filaSeleccionada.col]);
-        }
+        if (fila && filaSeleccionada.col) copyToClipboard(fila[filaSeleccionada.col]);
       }
-      
       if (e.ctrlKey && e.key === 'v' && filaSeleccionada) {
         e.preventDefault();
-        const textoPegado = await pasteFromClipboard();
-        if (textoPegado && filaSeleccionada.col) {
-          await handleSaveCell(filaSeleccionada.id, filaSeleccionada.col, textoPegado);
-        }
+        const text = await pasteFromClipboard();
+        if (text && filaSeleccionada.col) await handleSaveCell(filaSeleccionada.id, filaSeleccionada.col, text);
       }
     };
-    
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [userProfile, filaSeleccionada, filaCompletaSeleccionada, datos, handleNuevaFila, handleSaveCell, copyToClipboard, pasteFromClipboard]);
 
-  // Redimensionamiento
   const iniciarRedimensionarColumna = (e, columna) => {
     e.preventDefault();
     const startWidth = anchoColumnas[columna] || 150;
@@ -515,6 +595,30 @@ function App() {
 
   const totalPaginas = Math.ceil(totalEncontrados / FILAS_POR_PAGINA);
 
+  // ========================================
+  // VERIFICAR SI HAY SELECCIÓN PINTABLE
+  // ========================================
+
+  const haySeleccionPintable = () => {
+    // Si hay fila completa seleccionada, verificar si tiene al menos una celda pintable
+    if (filaCompletaSeleccionada) {
+      const fila = datos.find(d => d.id === filaCompletaSeleccionada);
+      if (fila) {
+        return COLUMNAS.some(col => esCeldaPintable(fila, col));
+      }
+    }
+    
+    // Si hay celda seleccionada, verificar si es pintable
+    if (filaSeleccionada?.id && filaSeleccionada?.col) {
+      const fila = datos.find(d => d.id === filaSeleccionada.id);
+      if (fila) {
+        return esCeldaPintable(fila, filaSeleccionada.col);
+      }
+    }
+    
+    return false;
+  };
+
   const handleClickOutside = (e) => {
     if (editandoCelda) return;
     if (tableRef.current && tableRef.current.contains(e.target)) return;
@@ -524,9 +628,46 @@ function App() {
 
   return (
     <div className="excel-shell" onClick={handleClickOutside}>
-      <div style={{ color: '#fff', fontSize: '1.2rem', padding: '10px 20px', fontWeight: 700, letterSpacing: 1 }}>
-        EazyLiens | ImpactBPO
-      </div>
+      {/* ✅ HEADER CON LOGOS - ImpactBPO principal, EazyLiens secundario */}
+      <header style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '12px', 
+        padding: '8px 24px',
+        backgroundColor: '#0f0f0f',
+        borderBottom: '1px solid #333'
+      }}>
+        {/* ImpactBPO - Logo PRINCIPAL (más grande) */}
+        <img 
+          src="/logo-impact.png" 
+          alt="ImpactBPO" 
+          style={{ 
+            height: '38px', 
+            width: 'auto',
+            objectFit: 'contain'
+          }} 
+        />
+        
+        {/* Separador sutil */}
+        <div style={{ 
+          width: '1px', 
+          height: '30px', 
+          backgroundColor: '#444',
+          margin: '0 4px'
+        }} />
+        
+        {/* EazyLiens - Logo SECUNDARIO (más pequeño) */}
+        <img 
+          src="/logo-eazy.png" 
+          alt="EazyLiens" 
+          style={{ 
+            height: '22px', 
+            width: 'auto',
+            objectFit: 'contain',
+            opacity: 0.9
+          }} 
+        />
+      </header>
 
       {!userProfile && (
         <Login
@@ -559,11 +700,12 @@ function App() {
         <AdminPanel onVolver={() => { setVerAdmin(false); fetchListas(); }} userRole={userProfile?.role} />
       )}
 
-      {verUsuarios && (userProfile?.role === 'Admin' || userProfile?.role === 'Superadmin') && (
+      {/* ✅ CORREGIDO: Admin también puede ver UsersPanel */}
+      {verUsuarios && (userProfile?.role === 'Superadmin' || userProfile?.role === 'Admin') && (
         <UsersPanel onVolver={() => setVerUsuarios(false)} userRole={userProfile?.role} />
       )}
 
-      {verLogs && (userProfile?.role === 'Admin' || userProfile?.role === 'Superadmin') && (
+      {verLogs && userProfile?.role === 'Superadmin' && (
         <LogsPanel onVolver={() => setVerLogs(false)} userRole={userProfile?.role} />
       )}
 
@@ -589,6 +731,7 @@ function App() {
             onResetTamanos={resetearTamanos}
             onExportarExcel={exportarExcel}
             onLogout={() => setUserProfile(null)}
+            puedePintar={haySeleccionPintable()}
           />
 
           <main className="table-viewport">
@@ -607,17 +750,6 @@ function App() {
                       }}
                     >
                       {c}
-                      {esColorAutomatico({[c]: 'ejemplo'}, c) && (
-                        <span style={{
-                          position: 'absolute',
-                          top: '2px',
-                          right: '2px',
-                          width: '6px',
-                          height: '6px',
-                          borderRadius: '50%',
-                          background: '#00ff88'
-                        }} title="Colores automáticos" />
-                      )}
                       <div
                         className="column-resizer"
                         onMouseDown={(e) => iniciarRedimensionarColumna(e, c)}
@@ -651,6 +783,7 @@ function App() {
                             e.stopPropagation();
                             setFilaCompletaSeleccionada(fila.id);
                             setFilaSeleccionada(null);
+                            setEditandoCelda(null);
                           }}
                           title="Clic para seleccionar toda la fila"
                         >
@@ -665,6 +798,7 @@ function App() {
                         {COLUMNAS.map(col => {
                           const isSelected = filaSeleccionada?.id === fila.id && filaSeleccionada?.col === col;
                           const isEditing = editandoCelda?.id === fila.id && editandoCelda?.col === col;
+                          const bgGuardado = safeJsonParse(fila.bg_color, {})[col];
 
                           return (
                             <CeldaMemo
@@ -673,6 +807,7 @@ function App() {
                               col={col}
                               anchoColumnas={anchoColumnas}
                               altoFilas={altoFilas}
+                              bgGuardado={bgGuardado}
                               isSelected={isSelected}
                               isEditing={isEditing}
                               opciones={opcionesListas[col]}
